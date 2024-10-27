@@ -42,11 +42,11 @@ class frontend extends \core_availability\frontend {
     protected function get_javascript_init_params($course, \cm_info $cm = null, \section_info $section = null) {
 		global $DB;
         $optionsdwm = self::convert_associative_array_for_js([
-            0 => get_string('minutes', 'availability_enroldate'),
-            1 => get_string('hours', 'availability_enroldate'),
-            2 => get_string('days', 'availability_enroldate'),
-            3 => get_string('weeks', 'availability_enroldate'),
-            4 => get_string('months', 'availability_enroldate'),
+            0 => get_string('minute', 'availability_enroldate'),
+            1 => get_string('hour', 'availability_enroldate'),
+            2 => get_string('day', 'availability_enroldate'),
+            3 => get_string('week', 'availability_enroldate'),
+            4 => get_string('month', 'availability_enroldate'),
         ], 'field', 'display');
 
         $optionsstart = [['field' => 1, 'display' => get_string('dateenrol', 'availability_enroldate')]];
