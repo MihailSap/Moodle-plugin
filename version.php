@@ -1,16 +1,31 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package  moodle_local_plugin
- * @copyright 2017, Mohammed Essaid MEZERREG <me@mohessaid.com>
- * @license MIT
- * @doc https://docs.moodle.org/dev/version.php
+ * Version info.
+ *
+ * @package availability_enroldate
+ * @copyright 2024 Deloviye ludi
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->component = 'local_moodle_local_plugin'; // Declare the type and name of this plugin.
-$plugin->version = 2017110700; // Plugin released on 4th November 2017.
-$plugin->requires = 2014051200; // Moodle 2.7.0 is required.
-$plugin->maturity = MATURITY_ALPHA; // This is considered as ALPHA for production sites.
-$plugin->release = 'v0.0.1'; // This is our first.
+$plugin->version = 2024102600;
+$plugin->requires = 2017051509;
+$plugin->maturity  = MATURITY_ALPHA;
+$plugin->release   = '0.0';
+$plugin->component = 'availability_enroldate';
