@@ -15,7 +15,7 @@ M.availability_enroldate.form = Y.Object(M.core_availability.plugin);
 M.availability_enroldate.form.timeFields = null;
 
 // Start field available for selection.
-M.availability_enroldate.form.startFields = null;
+M.availability_enroldate.form.startField = null;
 
 // A section or a module.
 M.availability_enroldate.form.isSection = null;

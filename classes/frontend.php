@@ -40,7 +40,6 @@ class frontend extends \core_availability\frontend {
      * @return array Array of parameters for the JavaScript function
      */
     protected function get_javascript_init_params($course, \cm_info $cm = null, \section_info $section = null) {
-		global $DB;
         $optionsdwm = self::convert_associative_array_for_js([
             0 => get_string('minute', 'availability_enroldate'),
             1 => get_string('hour', 'availability_enroldate'),
