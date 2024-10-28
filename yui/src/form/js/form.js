@@ -20,9 +20,6 @@ M.availability_enroldate.form.startField = null;
 // A section or a module.
 M.availability_enroldate.form.isSection = null;
 
-// Optional warnings that can be displayed.
-M.availability_enroldate.form.warningStrings = null;
-
 /**
  * Initialises this plugin.
  *
