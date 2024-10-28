@@ -54,7 +54,8 @@ M.availability_enroldate.form.getNode = function(json) {
     }
     html += '</select></label> ';
 
-    html += '<span class="relativestart">' + this.startFields + '</span>';
+    html += '<span class="relativestart">' + this.startField + '</span>';
+	html += '</span>';
 	var node = Y.Node.create('<span>' + html + '</span>');
 
 	i = 1;
