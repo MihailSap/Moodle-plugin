@@ -22,24 +22,18 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-$string['description'] = 'Open the materials depending on the date of registration of the user for the course.';
-$string['pluginname'] = 'Restriction by Enrolment date';
-$string['title'] = 'Enrolment Date';
-$string['after'] = ' after ';
-$string['before'] = ' before ';
-$string['dateenrol'] = 'after the date of registration of the user on the course';
+ $string['description'] = 'Open the materials depending on the date of registration of the user for the course.';
+ $string['pluginname'] = 'Restriction by Enrolment date';
+ $string['title'] = 'Enrolment Date';
+ $string['after'] = ' after ';
+ $string['before'] = ' before ';
+ $string['dateenrol'] = 'has(-ve) passed since the registration date for the course';
 $string['day'] = 'day';
-$string['days'] = 'days';
 $string['from'] = 'From {$a->rnumber} {$a->rtime} {$a->rela}';
 $string['hour'] = 'hour';
-$string['hours'] = 'hours';
 $string['minute'] = 'minute';
-$string['minutes'] = 'minutes';
 $string['missing'] = '(missing)';
 $string['month'] = 'month';
-$string['months'] = 'months';
 $string['until'] = 'Until {$a->rnumber} {$a->rtime} {$a->rela}';
 $string['week'] = 'week';
-$string['weeks'] = 'weeks';
 $string['year'] = 'year';
-$string['years'] = 'years';

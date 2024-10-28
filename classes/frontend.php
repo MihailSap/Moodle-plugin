@@ -49,7 +49,7 @@ class frontend extends \core_availability\frontend {
             4 => get_string('month', 'availability_enroldate'),
         ], 'field', 'display');
 
-        $optionsstart = [['field' => 1, 'display' => get_string('dateenrol', 'availability_enroldate')]];
+        $optionsstart = get_string('dateenrol', 'availability_enroldate');
         return [$optionsdwm, $optionsstart, is_null($section)];
     }
 }
