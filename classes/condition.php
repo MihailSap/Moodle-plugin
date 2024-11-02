@@ -1,18 +1,4 @@
 <?php
-// This file is part of Moodle - http://moodle.org/
-//
-// Moodle is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// Moodle is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
  * Languages configuration for the availability_enroldate plugin.
@@ -30,6 +16,23 @@ class condition extends \core_availability\condition {
     // variables. Here's an example variable:
     protected $allow;
 
+    // Используется для определения условия доступности, начиная с заданной даты
+    const AVAILABLE_AFTER_DATE = '>=';
+
+    // Используется для определения условия доступности до заданной даты
+    const AVAILABLE_BEFORE_DATE = '<';
+
+    // Хранит тип условия доступности (один из двух, представленных)
+    private $available_type;
+
+    // Определяет общее время,
+    // Нужно извлекать из JSON
+    private $time;
+
+    // Определяет время регистрации пользователя на курс,
+    // Нужно извлекать из БД
+    private $time_user_registration;
+
     public function __construct($structure) {
         // Retrieve any necessary data from the $structure here. The
         // structure is extracted from JSON data stored in the database
@@ -42,9 +45,12 @@ class condition extends \core_availability\condition {
         // throw a coding_exception if the structure is wrong.
     }
 
+    // СДЕЛАНО
+    // Сохраняет текущие условия в БД,
+    // готовит к созданию JSON
     public function save() {
-        // Save back the data into a plain array similar to $structure above.
-        return (object)array('type' => 'name', 'allow' => $this->allow);
+        return (object)array('type' => 'date',
+            'd' => $this->available_type, 't' => $this->time);
     }
 
     public function is_available(
@@ -89,5 +95,11 @@ class condition extends \core_availability\condition {
         // stuff like that. Just make a short string representation
         // of the values of the condition, suitable for developers.
         return $this->allow ? 'YES' : 'NO';
+    }
+
+    private function get_user_enroldate(\stdClass $user) {
+        // Логика получения даты зачисления проверяемого пользователя должна быть здесь.
+        // Это может включать обращение к базе данных или к объектам Moodle API.
+        return $user->enroltime ?? null;
     }
 }
