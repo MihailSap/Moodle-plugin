@@ -33,6 +33,9 @@ class condition extends \core_availability\condition {
     // Нужно извлекать из БД
     private $time_user_registration;
 
+    //
+    private static $forcecurrenttime = 0;
+
     public function __construct($structure) {
         // Retrieve any necessary data from the $structure here. The
         // structure is extracted from JSON data stored in the database
@@ -45,31 +48,37 @@ class condition extends \core_availability\condition {
         // throw a coding_exception if the structure is wrong.
     }
 
-    // СДЕЛАНО
+    // СДЕЛАНО | НУЖНО ПРОТЕСТИРОВАТЬ
     // Сохраняет текущие условия в БД,
     // готовит к созданию JSON
     public function save() {
-        return (object)array('type' => 'date',
-            'd' => $this->available_type, 't' => $this->time);
+        return (object)array(
+            'type' => 'date',
+            'd' => $this->available_type,
+            't' => $this->time
+        );
     }
 
+
+    // СДЕЛАНО | НУЖНО ПРОТЕСТИРОВАТЬ
+    // Определяет доступность в зависимости от даты регистрации
+    // и от заданного времени доступности
     public function is_available(
         $not,
         \core_availability\info $info,
         $grabthelot,
         $userid
     ) {
-        // This function needs to check whether the condition is available
-        // or not for the user specified in $userid.
-
-        // The value $not should be used to negate the condition. Other
-        // parameters provide data which can be used when evaluating the
-        // condition.
-
-        // For this trivial example, we will just use $allow to decide
-        // whether it is allowed or not. In a real condition you would
-        // do some calculation depending on the specified user.
-        $allow = $this->allow;
+        switch ($this->available_type) {
+            case self::AVAILABLE_AFTER_DATE:
+                $allow = $this->time_user_registration >= $this->time;
+                break;
+            case self::AVAILABLE_BEFORE_DATE:
+                $allow = $this->time_user_registration < $this->time;
+                break;
+            default:
+                throw new \coding_exception('Unexpected available type');
+        }
         if ($not) {
             $allow = !$allow;
         }
@@ -102,4 +111,13 @@ class condition extends \core_availability\condition {
         // Это может включать обращение к базе данных или к объектам Moodle API.
         return $user->enroltime ?? null;
     }
+
+
+//    protected static function get_time() {
+//        if (self::$forcecurrenttime) {
+//            return self::$forcecurrenttime;
+//        } else {
+//            return time();
+//        }
+//    }
 }
