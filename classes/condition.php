@@ -99,17 +99,19 @@ class condition extends \core_availability\condition {
         return $allow ? 'Users are allowed' : 'Users not allowed';
     }
 
+    // СДЕЛАНО | НУЖНО ПРОТЕСТИРОВАТЬ
+    // Метод, необходимый для отладки и модульного тестирования
+    // Строковое представление значений condition 
     protected function get_debug_string() {
-        // This function is only normally used for unit testing and
-        // stuff like that. Just make a short string representation
-        // of the values of the condition, suitable for developers.
-        return $this->allow ? 'YES' : 'NO';
+        return $this->available_type . ' ' . gmdate('Y-m-d H:i:s', $this->time);
     }
 
-    private function get_user_enroldate(\stdClass $user) {
-        // Логика получения даты зачисления проверяемого пользователя должна быть здесь.
-        // Это может включать обращение к базе данных или к объектам Moodle API.
-        return $user->enroltime ?? null;
+    public static function get_json($direction, $time) {
+        return (object)array(
+            'type' => 'date', 
+            'd' => available_type, 
+            't' => (int)$time
+        );
     }
 
 
