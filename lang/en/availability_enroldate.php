@@ -22,18 +22,20 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+ $string['ajaxerror'] = 'Error contacting server to convert times';
+ $string['direction_before'] = 'Enrolment Date';
+ $string['enroldate_after'] = 'After';
+ $string['direction_label'] = 'Direction';
+ $string['enroldate_before'] = 'Before';
  $string['description'] = 'Open the materials depending on the date of registration of the user for the course.';
+ $string['full_from'] = 'It is after <strong>{$a}</strong>';
+ $string['full_from_date'] = 'It is on or after <strong>{$a}</strong>';
+ $string['full_until'] = 'It is before <strong>{$a}</strong>';
+ $string['full_until_date'] = 'It is before end of <strong>{$a}</strong>';
  $string['pluginname'] = 'Restriction by Enrolment date';
- $string['title'] = 'Enrolment Date';
- $string['after'] = ' after ';
- $string['before'] = ' before ';
- $string['dateenrol'] = 'has(-ve) passed since the registration date for the course';
-$string['day'] = 'day';
-$string['from'] = 'From {$a->rnumber} {$a->rtime} {$a->rela}';
-$string['hour'] = 'hour';
-$string['minute'] = 'minute';
-$string['missing'] = '(missing)';
-$string['month'] = 'month';
-$string['until'] = 'Until {$a->rnumber} {$a->rtime} {$a->rela}';
-$string['week'] = 'week';
-$string['year'] = 'year';
+ $string['short_from'] = 'Available if enrolled after <strong>{$a}</strong>';
+ $string['short_from_date'] = 'Available if enrolled after <strong>{$a}</strong>';
+ $string['short_until'] = 'Available if enrolled before <strong>{$a}</strong>';
+ $string['short_until_date'] = 'Available if enrolled before <strong>{$a}</strong>';
+ $string['title'] = 'Restriction by Enrolment date';
+ $string['privacy:metadata'] = 'The Restriction by date plugin does not store any personal data.';

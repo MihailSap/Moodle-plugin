@@ -24,31 +24,138 @@
 
 namespace availability_enroldate;
 
-use cm_info;
-use section_info;
-use stdClass;
+defined('MOODLE_INTERNAL') || die();
 
 class frontend extends \core_availability\frontend {
-	/**
-     * Gets additional parameters for the plugin's initInner function.
+    /**
+     * Возвращает список строковых идентификаторов (в языковом файле плагина),
+	 * которые требуются в JavaScript для этого плагина.
+	 * Значение по умолчанию ничего не возвращает.
      *
-     * Default returns no parameters.
+     * @return array Массив требуемых строковых идентификаторов
+     */
+    protected function get_javascript_strings() {
+        return array('ajaxerror', 'direction_before', 'enroldate_after', 'enroldate_before', 'direction_label');
+    }
+
+    /**
+     * При заданных значениях поля получает соответствующую временную метку timestamp.
      *
-     * @param stdClass $course Course object
-     * @param cm_info|null $cm Course-module currently being edited (null if none)
-     * @param section_info|null $section Section currently being edited (null if none)
-     * @return array Array of parameters for the JavaScript function
+     * @param int $year
+     * @param int $month
+     * @param int $day
+     * @param int $hour
+     * @param int $minute
+     * @return int Timestamp
+     */
+    public static function get_time_from_fields($year, $month, $day, $hour, $minute) {
+        $calendartype = \core_calendar\type_factory::get_calendar_instance();
+        $gregoriandate = $calendartype->convert_to_gregorian($year, $month, $day, $hour, $minute);
+        return make_timestamp($gregoriandate['year'], $gregoriandate['month'],
+                $gregoriandate['day'], $gregoriandate['hour'], $gregoriandate['minute'], 0);
+    }
+
+    /**
+     * Учитывая временную метку, получает соответствующие значения полей.
+     *
+     * @param int $time Timestamp
+     * @return array Объект с полями для года, месяца, дня, часа, минуты
+     */
+    public static function get_fields_from_time($time) {
+        $calendartype = \core_calendar\type_factory::get_calendar_instance();
+        $wrongfields = $calendartype->timestamp_to_date_array($time);
+        return array(
+			'day' => $wrongfields['mday'],
+            'month' => $wrongfields['mon'],
+			'year' => $wrongfields['year'],
+            'hour' => $wrongfields['hours'],
+			'minute' => $wrongfields['minutes']
+		);
+    }
+
+    /**
+     * Получает дополнительные параметры для функции initInner плагина.
+     *
+     * Значение по умолчанию не возвращает никаких параметров.
+     *
+     * @param \stdClass $course Объект курса
+     * @param \cm_info $cm Курс-модуль, редактируемый в данный момент (null, если нет)
+     * @param \section_info $section Редактируемый в данный момент раздел (null, если нет)
+     * @return array Массив параметров для функции JavaScript
      */
     protected function get_javascript_init_params($course, \cm_info $cm = null, \section_info $section = null) {
-        $optionsdwm = self::convert_associative_array_for_js([
-            0 => get_string('minute', 'availability_enroldate'),
-            1 => get_string('hour', 'availability_enroldate'),
-            2 => get_string('day', 'availability_enroldate'),
-            3 => get_string('week', 'availability_enroldate'),
-            4 => get_string('month', 'availability_enroldate'),
-        ], 'field', 'display');
+        global $CFG, $OUTPUT;
+        require_once($CFG->libdir . '/formslib.php');
 
-        $optionsstart = get_string('dateenrol', 'availability_enroldate');
-        return [$optionsdwm, $optionsstart, is_null($section)];
+        $calendartype = \core_calendar\type_factory::get_calendar_instance();
+
+        // Получим текущую дату и установим время равным 00:00
+        $wrongfields = $calendartype->timestamp_to_date_array(time());
+        $current = array(
+			'day' => $wrongfields['mday'],
+            'month' => $wrongfields['mon'],
+			'year' => $wrongfields['year'],
+            'hour' => 0,
+			'minute' => 0
+		);
+
+        // Получим массивы часов и минут
+        $hours = array();
+        for ($i = 0; $i <= 23; $i++) {
+            $hours[$i] = sprintf("%02d", $i);
+        }
+        $minutes = array();
+        for ($i = 0; $i < 60; $i += 5) {
+            $minutes[$i] = sprintf("%02d", $i);
+        }
+
+		// Получим список дат
+        $fields = $calendartype->get_date_order($calendartype->get_min_year(), $calendartype->get_max_year());
+
+        // Добавляем поля минут и часов и разделитель ':'
+        $fields['split'] = '/';
+        if (right_to_left()) {
+            $fields['minute'] = $minutes;
+            $fields['colon'] = ':';
+            $fields['hour'] = $hours;
+        } else {
+            $fields['hour'] = $hours;
+            $fields['colon'] = ':';
+            $fields['minute'] = $minutes;
+        }
+
+        // Выводим все поля данных
+        $html = '<span class="availability-group">';
+        foreach ($fields as $field => $options) {
+            if ($options === '/') {
+                $html = rtrim($html);
+                $html .= '</span> <span class="availability-group">';
+                continue;
+            }
+            if ($options === ':') {
+                $html .= ': ';
+                continue;
+            }
+            $html .= \html_writer::start_tag('label');
+            $html .= \html_writer::span(get_string($field) . ' ', 'accesshide');
+            $html .= \html_writer::start_tag('select', array('name' => 'x[' . $field . ']', 'class' => 'custom-select'));
+            foreach ($options as $key => $value) {
+                $params = array('value' => $key);
+                if ($current[$field] == $key) {
+                    $params['selected'] = 'selected';
+                }
+                $html .= \html_writer::tag('option', s($value), $params);
+            }
+            $html .= \html_writer::end_tag('select');
+            $html .= \html_writer::end_tag('label');
+            $html .= ' ';
+        }
+        $html = rtrim($html) . '</span>';
+
+        // Получим время, соответствующее этой дате по умолчанию
+        $time = self::get_time_from_fields($current['year'], $current['month'],
+                $current['day'], $current['hour'], $current['minute']);
+
+        return array($html, $time);
     }
 }
