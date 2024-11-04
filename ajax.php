@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Handles AJAX processing (convert date to timestamp using current calendar).
+ * Обрабатывает обработку AJAX (преобразует дату в метку времени с помощью текущего календаря)
  *
  * @package availability_enroldate
  * @copyright 2024 Deloviye ludi
