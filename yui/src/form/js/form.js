@@ -35,7 +35,7 @@ M.availability_enroldate.form.getNode = function(json) {
             '</select></label></span> ' + this.html;
     var node = Y.Node.create('<span>' + html + '</span>');
 
-    // Установим начальное значение, если оно не задано по умолчанию
+    // Установим начальное значение, если оно задано
     if (json.t !== undefined) {
         node.setData('time', json.t);
         // Отключим все
