@@ -12,53 +12,99 @@
 namespace availability_enroldate;
 
 class condition extends \core_availability\condition {
-    // Any data associated with the condition can be stored in member
-    // variables. Here's an example variable:
-    protected $allow;
-
-    // Используется для определения условия доступности, начиная с заданной даты
+    /**
+     * Определяет условия доступности, начиная с заданной даты.
+     * @var string
+     */
     const AVAILABLE_AFTER_DATE = '>=';
 
-    // Используется для определения условия доступности до заданной даты
+    /**
+     * Определяет условия доступности до заданной даты.
+     * @var string
+     */
     const AVAILABLE_BEFORE_DATE = '<';
 
-    // Хранит тип условия доступности (один из двух, представленных)
-    private $available_type;
+    /**
+     * Хранит тип условия доступности (один из двух, представленных выше)
+     * @var string
+     */
+    private $AVAILABLE_TYPE;
 
-    // Определяет общее время,
-    // Нужно извлекать из JSON
+    /**
+     * Определяет общее время
+     * Нужно извлекать из JSON
+     * @var int
+     */
     private $time;
 
-    // Определяет время регистрации пользователя на курс,
-    // Нужно извлекать из БД
+    /**
+     * Определяет время регистрации пользователя на курс
+     * Нужно извлекать из БД
+     * @var int
+     */
     private $time_user_registration;
 
-    //
+    /** @var int Forced current time (for unit tests) or 0 for normal. */
     private static $forcecurrenttime = 0;
 
+    /**
+     * Конструктор
+     * @param \stdClass $structure Data structure from JSON decode
+     * @throws \coding_exception If invalid data structure.
+     */
     public function __construct($structure) {
-        // Retrieve any necessary data from the $structure here. The
-        // structure is extracted from JSON data stored in the database
-        // as part of the tree structure of conditions relating to an
-        // activity or section.
-        // For example, you could obtain the 'allow' value:
-        $this->allow = $structure->allow;
+        global $CFG, $USER, $COURSE, $DB;
 
-        // It is also a good idea to check for invalid values here and
-        // throw a coding_exception if the structure is wrong.
+        // Проверяем наличие и корректность направления условия 'd'
+        if (isset($structure->d) && in_array($structure->d,
+                array(self::AVAILABLE_AFTER_DATE, self::AVAILABLE_BEFORE_DATE))) {
+            // Устанавливаем направление условия
+            $this->AVAILABLE_TYPE = $structure->d;
+        } else {
+            throw new \coding_exception('Missing or invalid ->d for date condition');
+        }
+
+        // Получаем контекст текущего курса
+        $coursecontext = \context_course::instance($COURSE->id);
+
+        // Проверяем, зачислен ли пользователь в курс
+        if (is_enrolled($coursecontext)) {
+            // Формируем SQL-запрос для получения времени зачисления
+            $sql = "SELECT max(ue.timecreated) as enroldate
+                      FROM {user_enrolments} ue
+                      JOIN {enrol} e ON (e.id = ue.enrolid AND e.courseid = :courseid)
+                      JOIN {user} u ON u.id = ue.userid
+                     WHERE ue.userid = :userid AND u.deleted = 0";
+
+            // Параметры для SQL-запроса: ID пользователя и ID курса
+            $params = array('userid' => $USER->id, 'courseid' => $coursecontext->instanceid);
+
+            // Получаем дату зачисления
+            $enroldate = $DB->get_field_sql($sql, $params, IGNORE_MISSING);
+            $this->time_user_registration = $enroldate;
+        }
+
+        // Проверяем наличие и корректность времени условия 't'
+        if (isset($structure->t) && is_int($structure->t)) {
+            $this->time = $structure->t;
+        } else {
+            throw new \coding_exception('Missing or invalid ->t for date condition');
+        }
     }
 
-    // СДЕЛАНО | НУЖНО ПРОТЕСТИРОВАТЬ
-    // Сохраняет текущие условия в БД,
-    // готовит к созданию JSON
+    /**
+     * Сохраняет текущие условия в БД
+     * Готовит к созданию JSON
+     *
+     * @return \stdClass Structure object
+     */
     public function save() {
         return (object)array(
             'type' => 'date',
-            'd' => $this->available_type,
+            'd' => $this->AVAILABLE_TYPE,
             't' => $this->time
         );
     }
-
 
     // СДЕЛАНО | НУЖНО ПРОТЕСТИРОВАТЬ
     // Определяет доступность в зависимости от даты регистрации
@@ -85,6 +131,34 @@ class condition extends \core_availability\condition {
         return $allow;
     }
 
+    /**
+     * Метод, необходимый для отладки и модульного тестирования
+     * Строковое представление значений condition
+     *
+     * @return string Text representation of parameters
+     */
+    protected function get_debug_string() {
+        return $this->AVAILABLE_TYPE . ' ' . gmdate('Y-m-d H:i:s', $this->time);
+    }
+
+    /**
+     * Returns a JSON object which corresponds to a condition of this type.
+     *
+     * Intended for unit testing, as normally the JSON values are constructed
+     * by JavaScript code.
+     *
+     * @param string $direction DIRECTION_xx constant
+     * @param int $time Time in epoch seconds
+     * @return stdClass Object representing condition
+     */
+    public static function get_json($direction, $time) {
+        return (object)array(
+            'type' => 'date',
+            'd' => $direction,
+            't' => (int)$time
+        );
+    }
+
     public function get_description(
         $full,
         $not,
@@ -98,28 +172,4 @@ class condition extends \core_availability\condition {
         $allow = $not ? !$this->allow : $this->allow;
         return $allow ? 'Users are allowed' : 'Users not allowed';
     }
-
-    // СДЕЛАНО | НУЖНО ПРОТЕСТИРОВАТЬ
-    // Метод, необходимый для отладки и модульного тестирования
-    // Строковое представление значений condition 
-    protected function get_debug_string() {
-        return $this->available_type . ' ' . gmdate('Y-m-d H:i:s', $this->time);
-    }
-
-    public static function get_json($direction, $time) {
-        return (object)array(
-            'type' => 'date', 
-            'd' => available_type, 
-            't' => (int)$time
-        );
-    }
-
-
-//    protected static function get_time() {
-//        if (self::$forcecurrenttime) {
-//            return self::$forcecurrenttime;
-//        } else {
-//            return time();
-//        }
-//    }
 }
