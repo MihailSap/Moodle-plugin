@@ -8,7 +8,6 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-// You must use the right namespace (matching your plugin component name).
 namespace availability_enroldate;
 
 class condition extends \core_availability\condition {
@@ -159,24 +158,29 @@ class condition extends \core_availability\condition {
         );
     }
 
-//    public function get_description(
-//        $full,
-//        $not,
-//        \core_availability\info $info
-//    ) {
-//        // This function returns the information shown about the
-//        // condition on editing screens.
-//        // Usually it is similar to the information shown if the
-//        // user doesn't meet the condition.
-//        // Note: it does not depend on the current user.
-//        $allow = $not ? !$this->allow : $this->allow;
-//        return $allow ? 'Users are allowed' : 'Users not allowed';
-//    }
-
+    /**
+     * Получает строку, описывающую данное ограничение (влияет ли оно или нет).
+     * Используется для получения информации, которая отображается студентам,
+     * если активность для них недоступна, и для сотрудников, чтобы видеть
+     * условия доступа.
+     *
+     * @param bool $full True, если это вид "полной информации".
+     * @param bool $not True, если мы инвертируем условие.
+     * @param \core_availability\info $info Элемент, который мы проверяем.
+     * @return string Строка информации (для администраторов) обо всех
+     * ограничениях на этот элемент.
+     */
     public function get_description($full, $not, \core_availability\info $info) {
         return $this->get_either_description($not, false);
     }
 
+    /**
+     * Показывает описание с использованием различных языковых строк для
+     * автономной версии или полной.
+     *
+     * @param bool $not True, если действует условие НЕ (инверсия).
+     * @param bool $standalone True, если использовать автономные языковые строки.
+     */
     protected function get_either_description($not, $standalone) {
         $direction = $this->get_logical_direction($not);
         $midnight = self::is_midnight($this->time);
@@ -192,6 +196,13 @@ class condition extends \core_availability\condition {
         }
     }
 
+    /**
+     * Получает фактическое направление проверки на основе значения $not.
+     *
+     * @param bool $not Правда, если условие инвертировано.
+     * @return string Константа направления.
+     * @throws \coding_exception
+     */
     protected function get_logical_direction($not) {
         switch ($this->AVAILABLE_TYPE) {
             case self::AVAILABLE_AFTER_DATE:
@@ -203,11 +214,28 @@ class condition extends \core_availability\condition {
         }
     }
 
+    /**
+     * Показывает время либо как дату, либо как полный формат даты и времени,
+     * в зависимости от временной зоны пользователя.
+     *
+     * @param int $time Время.
+     * @param bool $dateonly Если правда, используется только дата.
+     * @param bool $until Если правда, и если используется только дата,
+     * показывает предыдущую дату.
+     * @return string Дата.
+     */
     protected function show_time($time, $dateonly, $until = false) {
         return userdate($time,
             get_string($dateonly ? 'strftimedate' : 'strftimedatetime', 'langconfig'));
     }
 
+    /**
+     * Проверяет, если заданное время относится точно к полуночи
+     * (в текущей временной зоне пользователя).
+     *
+     * @param int $time Время.
+     * @return bool True, если время относится к полуночи, false в противном случае.
+     */
     protected static function is_midnight($time) {
         return usergetmidnight($time) == $time;
     }
