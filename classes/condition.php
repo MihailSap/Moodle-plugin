@@ -159,17 +159,56 @@ class condition extends \core_availability\condition {
         );
     }
 
-    public function get_description(
-        $full,
-        $not,
-        \core_availability\info $info
-    ) {
-        // This function returns the information shown about the
-        // condition on editing screens.
-        // Usually it is similar to the information shown if the
-        // user doesn't meet the condition.
-        // Note: it does not depend on the current user.
-        $allow = $not ? !$this->allow : $this->allow;
-        return $allow ? 'Users are allowed' : 'Users not allowed';
+//    public function get_description(
+//        $full,
+//        $not,
+//        \core_availability\info $info
+//    ) {
+//        // This function returns the information shown about the
+//        // condition on editing screens.
+//        // Usually it is similar to the information shown if the
+//        // user doesn't meet the condition.
+//        // Note: it does not depend on the current user.
+//        $allow = $not ? !$this->allow : $this->allow;
+//        return $allow ? 'Users are allowed' : 'Users not allowed';
+//    }
+
+    public function get_description($full, $not, \core_availability\info $info) {
+        return $this->get_either_description($not, false);
+    }
+
+    protected function get_either_description($not, $standalone) {
+        $direction = $this->get_logical_direction($not);
+        $midnight = self::is_midnight($this->time);
+        $midnighttag = $midnight ? '_date' : '';
+        $satag = $standalone ? 'short_' : 'full_';
+        switch ($direction) {
+            case self::AVAILABLE_AFTER_DATE:
+                return get_string($satag . 'from' . $midnighttag, 'availability_enroldate',
+                    self::show_time($this->time, $midnight, false));
+            case self::AVAILABLE_BEFORE_DATE:
+                return get_string($satag . 'until' . $midnighttag, 'availability_enroldate',
+                    self::show_time($this->time, $midnight, true));
+        }
+    }
+
+    protected function get_logical_direction($not) {
+        switch ($this->AVAILABLE_TYPE) {
+            case self::AVAILABLE_AFTER_DATE:
+                return $not ? self::AVAILABLE_BEFORE_DATE : self::AVAILABLE_AFTER_DATE;
+            case self::AVAILABLE_BEFORE_DATE:
+                return $not ? self::AVAILABLE_AFTER_DATE : self::AVAILABLE_BEFORE_DATE;
+            default:
+                throw new \coding_exception('Unexpected direction');
+        }
+    }
+
+    protected function show_time($time, $dateonly, $until = false) {
+        return userdate($time,
+            get_string($dateonly ? 'strftimedate' : 'strftimedatetime', 'langconfig'));
+    }
+
+    protected static function is_midnight($time) {
+        return usergetmidnight($time) == $time;
     }
 }
