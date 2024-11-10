@@ -22,21 +22,15 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-$string['ajaxerror'] = 'Ошибка при обращении к серверу для преобразования времени';
-$string['direction_before'] = 'Дата зачисления';
-$string['enroldate_after'] = 'После';
-$string['direction_label'] = 'До/После';
-$string['enroldate_before'] = 'До';
 $string['description'] = 'Открывайте материалы в зависимости от даты регистрации пользователя на курс.';
-$string['full_from'] = 'Это после <strong>{$a}</strong>';
-$string['full_from_date'] = 'Это происходит во время или после <strong>{$a}</strong>';
-$string['full_until'] = 'Это до <strong>{$a}</strong>';
-$string['full_until_date'] = 'Это до окончания <strong>{$a}</strong>';
 $string['pluginname'] = 'Ограничение по дате регистрации';
-$string['short_from'] = 'Доступно, если регистрация после <strong>{$a}</strong>';
-$string['short_from_date'] = 'Доступно, если регистрация после <strong>{$a}</strong>';
-$string['short_until'] = 'Доступно, если регистрация после <strong>{$a}</strong>';
-$string['short_until_date'] = 'Доступно, если регистрация после <strong>{$a}</strong>';
 $string['title'] = 'Ограничение по дате регистрации';
 $string['privacy:metadata'] = 'Плагин "Ограничение по дате регистрации" не хранит никаких персональных данных.';
-
+$string['gone'] = 'Прошёл(-ло) ';
+$string['dateenrol'] = ' после даты регистрации на курсе.';
+$string['day'] = 'день(-я,-ей)';
+$string['hour'] = 'час(-а,-ов)';
+$string['minute'] = 'минут(-а,-ы)';
+$string['month'] = 'месяц(-а,-ев)';
+$string['week'] = 'неделя(-ли,-ль)';
+$string['year'] = 'год(-а,лет)';

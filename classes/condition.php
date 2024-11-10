@@ -100,7 +100,6 @@ class condition extends \core_availability\condition {
     public function save() {
         return (object)array(
             'type' => 'date',
-            'd' => $this->AVAILABLE_TYPE,
             't' => $this->time
         );
     }
@@ -153,7 +152,6 @@ class condition extends \core_availability\condition {
     public static function get_json($direction, $time) {
         return (object)array(
             'type' => 'date',
-            'd' => $direction,
             't' => (int)$time
         );
     }
