@@ -40,13 +40,15 @@ class frontend extends \core_availability\frontend {
      * @return array Массив параметров для функции JavaScript
      */
     protected function get_javascript_init_params($course, ?cm_info $cm = null, ?section_info $section = null) {
-        $optionsdwm = self::convert_associative_array_for_js([
+		$optionsdwm = self::convert_associative_array_for_js([
             0 => get_string('minute', 'availability_enroldate'),
             1 => get_string('hour', 'availability_enroldate'),
             2 => get_string('day', 'availability_enroldate'),
             3 => get_string('week', 'availability_enroldate'),
             4 => get_string('month', 'availability_enroldate'),
         ], 'field', 'display');
-        return [$optionsdwm, is_null($section)];
+		$description_before = get_string('description_before','availability_enroldate');
+        $description_after = get_string('description_after', 'availability_enroldate');
+        return [$optionsdwm, $description_before, $description_after, is_null($section)];
     }
 }

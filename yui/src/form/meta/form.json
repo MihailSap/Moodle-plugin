@@ -1,5 +1,5 @@
 {
-	"moodle-availability_relativedate-form": {
+	"moodle-availability_enroldate-form": {
 		"requires": [
 			"base",
 			"node",

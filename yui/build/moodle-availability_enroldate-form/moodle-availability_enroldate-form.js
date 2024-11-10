@@ -1,23 +1,29 @@
 YUI.add('moodle-availability_enroldate-form', function (Y, NAME) {
 
 /**
- * JavaScript для редактирования условий relativedate в форме.
+ * JavaScript для редактирования условий enroldate в форме.
  *
- * @module moodle-availability_relativedate-form
+ * @module moodle-availability_enroldate-form
  */
-M.availability_relativedate = M.availability_relativedate || {};
+M.availability_enroldate = M.availability_enroldate || {};
 
 /**
- * @class M.availability_relativedate.form
+ * @class M.availability_enroldate.form
  * @extends M.core_availability.plugin
  */
-M.availability_relativedate.form = Y.Object(M.core_availability.plugin);
+M.availability_enroldate.form = Y.Object(M.core_availability.plugin);
 
 // Поля времени, доступные для выбора.
-M.availability_relativedate.form.timeFields = null;
+M.availability_enroldate.form.timeFields = null;
+
+// Текст перед выпадающим списком
+M.availability_enroldate.form.description_before = null;
+
+// Текст после выпадающего списка
+M.availability_enroldate.form.description_after = null;
 
 // Раздел или модуль.
-M.availability_relativedate.form.isSection = null;
+M.availability_enroldate.form.isSection = null;
 
 
 /**
@@ -25,64 +31,69 @@ M.availability_relativedate.form.isSection = null;
  *
  * @method initInner
  * @param {array} timeFields Набор временных полей
+ * @param {string} description_before Строка перед списком
+ * @param {string} description_after Строка после списка
  * @param {boolean} isSection Это раздел или нет
  */
-M.availability_relativedate.form.initInner = function(timeFields, isSection) {
+M.availability_enroldate.form.initInner = function(timeFields, description_before, description_after, isSection) {
     this.timeFields = timeFields;
+	this.description_before = description_before;
+    this.description_after = description_after;
     this.isSection = isSection;
 };
 
-M.availability_relativedate.form.getNode = function(json) {
-    var html = '<span class="availability-relativedate">';
-	html += '<span class="gone">' + M.util.get_string('gone', 'availability_enroldate') + '</span>';
+M.availability_enroldate.form.getNode = function(json) {
+    var html = '<span class="availability-enroldate">';
 
-    html += '<label><select name="relativenumber">';
+	html += '<span class="desc_before">' + this.description_before + '</span>';
+
+    html += '<label><select name="enrolnumber">';
     for (var i = 1; i < 60; i++) {
         html += '<option value="' + i + '">' + i + '</option>';
     }
-    html += '</select></label> ';
 
-    html += '<label><select name="relativednw">';
+    html += '</select></label> ';
+    html += '<label><select name="enroldnw">';
     for (var i = 0; i < this.timeFields.length; i++) {
         html += '<option value="' + this.timeFields[i].field + '">' + this.timeFields[i].display + '</option>';
     }
     html += '</select></label> ';
-
-    html += '<span class="relativestart">' + M.util.get_string('dateenrol', 'availability_enroldate') + '</span>';
+    html += '<span class="desc_after">' + this.description_after + '</span>';
     var node = Y.Node.create('<span>' + html + '</span>');
 
-    // Установите начальные значения, если они указаны.
+    // Установим начальные значения, если они указаны.
 	var value = 1;
     if (json.n !== undefined) {
         value = json.n;
     }
-    node.one('select[name=relativenumber]').set('value', value);
+    node.one('select[name=enrolnumber]').set('value', value);
 
     value = 2;
     if (json.d !== undefined) {
         value = json.d;
     }
-    node.one('select[name=relativednw]').set('value', value);
+    node.one('select[name=enroldnw]').set('value', value);
 
     // Добавьте обработчики событий (только в первый раз).
-    if (!M.availability_relativedate.form.addedEvents) {
-        M.availability_relativedate.form.addedEvents = true;
+    if (!M.availability_enroldate.form.addedEvents) {
+        M.availability_enroldate.form.addedEvents = true;
         var root = Y.one('.availability-field');
         root.delegate('change', function() {
             M.core_availability.form.update();
-        }, '.availability_relativedate select');
+        }, '.availability_enroldate select');
     }
 
     return node;
 };
 
-M.availability_relativedate.form.fillValue = function(value, node) {
-    value.n = Number(node.one('select[name=relativenumber]').get('value'));
-    value.d = Number(node.one('select[name=relativednw]').get('value'));
+M.availability_enroldate.form.fillValue = function(value, node) {
+    value.n = Number(node.one('select[name=enrolnumber]').get('value'));
+    value.d = Number(node.one('select[name=enroldnw]').get('value'));
 };
 
-M.availability_relativedate.form.fillErrors = function(errors, node) {
+M.availability_enroldate.form.fillErrors = function(errors, node) {
     this.fillValue({}, node);
 };
+
 
 	}, '@VERSION@', {"requires": ["base", "node", "event", "moodle-core_availability-form"]});
