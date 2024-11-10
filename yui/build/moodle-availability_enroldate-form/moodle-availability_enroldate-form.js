@@ -16,6 +16,12 @@ M.availability_relativedate.form = Y.Object(M.core_availability.plugin);
 // Поля времени, доступные для выбора.
 M.availability_relativedate.form.timeFields = null;
 
+// Текст перед выпадающим списком
+M.availability_relativedate.form.description_before = null;
+
+// Текст после выпадающего списка
+M.availability_relativedate.form.description_after = null;
+
 // Раздел или модуль.
 M.availability_relativedate.form.isSection = null;
 
@@ -25,33 +31,37 @@ M.availability_relativedate.form.isSection = null;
  *
  * @method initInner
  * @param {array} timeFields Набор временных полей
+ * @param {string} description_before Строка перед списком
+ * @param {string} description_after Строка после списка
  * @param {boolean} isSection Это раздел или нет
  */
-M.availability_relativedate.form.initInner = function(timeFields, isSection) {
+M.availability_relativedate.form.initInner = function(timeFields, description_before, description_after, isSection) {
     this.timeFields = timeFields;
+	this.description_before = description_before;
+    this.description_after = description_after;
     this.isSection = isSection;
 };
 
 M.availability_relativedate.form.getNode = function(json) {
     var html = '<span class="availability-relativedate">';
-	html += '<span class="gone">' + M.util.get_string('gone', 'availability_enroldate') + '</span>';
+
+	html += '<span class="relativebefore">' + this.description_before + '</span>';
 
     html += '<label><select name="relativenumber">';
     for (var i = 1; i < 60; i++) {
         html += '<option value="' + i + '">' + i + '</option>';
     }
-    html += '</select></label> ';
 
+    html += '</select></label> ';
     html += '<label><select name="relativednw">';
     for (var i = 0; i < this.timeFields.length; i++) {
         html += '<option value="' + this.timeFields[i].field + '">' + this.timeFields[i].display + '</option>';
     }
     html += '</select></label> ';
-
-    html += '<span class="relativestart">' + M.util.get_string('dateenrol', 'availability_enroldate') + '</span>';
+    html += '<span class="relativestart">' + this.description_after + '</span>';
     var node = Y.Node.create('<span>' + html + '</span>');
 
-    // Установите начальные значения, если они указаны.
+    // Установим начальные значения, если они указаны.
 	var value = 1;
     if (json.n !== undefined) {
         value = json.n;
@@ -84,5 +94,6 @@ M.availability_relativedate.form.fillValue = function(value, node) {
 M.availability_relativedate.form.fillErrors = function(errors, node) {
     this.fillValue({}, node);
 };
+
 
 	}, '@VERSION@', {"requires": ["base", "node", "event", "moodle-core_availability-form"]});
