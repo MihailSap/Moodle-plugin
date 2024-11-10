@@ -32,9 +32,8 @@ M.availability_relativedate.form.initInner = function(timeFields, isSection) {
 
 M.availability_relativedate.form.getNode = function(json) {
     var html = '<span class="availability-relativedate">';
-	html += '<span class="gone">' + M.util.get_string('gone', 'availability_enroldate') + '</span>';
 
-    html += '<label><select name="relativenumber">';
+    html += '<label><span class="gone">' + M.util.get_string('gone', 'availability_enroldate') + '</span><select name="relativenumber">';
     for (var i = 1; i < 60; i++) {
         html += '<option value="' + i + '">' + i + '</option>';
     }
@@ -44,9 +43,8 @@ M.availability_relativedate.form.getNode = function(json) {
     for (var i = 0; i < this.timeFields.length; i++) {
         html += '<option value="' + this.timeFields[i].field + '">' + this.timeFields[i].display + '</option>';
     }
-    html += '</select></label> ';
+    html += '</select><span class="relativestart">' + M.util.get_string('dateenrol', 'availability_enroldate') + '</span></label> ';
 
-    html += '<span class="relativestart">' + M.util.get_string('dateenrol', 'availability_enroldate') + '</span>';
     var node = Y.Node.create('<span>' + html + '</span>');
 
     // Установим начальные значения, если они указаны.
