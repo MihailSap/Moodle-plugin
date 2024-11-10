@@ -34,13 +34,13 @@ M.availability_relativedate.form.getNode = function(json) {
 	html += '<span class="gone">' + M.util.get_string('gone', 'availability_enroldate') + '</span>';
 
     html += '<label><select name="relativenumber">';
-    for (i = 1; i < 60; i++) {
+    for (var i = 1; i < 60; i++) {
         html += '<option value="' + i + '">' + i + '</option>';
     }
     html += '</select></label> ';
 
     html += '<label><select name="relativednw">';
-    for (i = 0; i < this.timeFields.length; i++) {
+    for (var i = 0; i < this.timeFields.length; i++) {
         html += '<option value="' + this.timeFields[i].field + '">' + this.timeFields[i].display + '</option>';
     }
     html += '</select></label> ';
