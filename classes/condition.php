@@ -98,10 +98,10 @@ class condition extends \core_availability\condition {
      * @return \stdClass Structure object
      */
     public function save() {
-        return (object)[
-			'n' => null,
-            'd' => null,
-		];
+        return (object)array(
+            'type' => 'date',
+            't' => $this->time
+        );
     }
 
     // СДЕЛАНО | НУЖНО ПРОТЕСТИРОВАТЬ
@@ -150,10 +150,10 @@ class condition extends \core_availability\condition {
      * @return stdClass Object representing condition
      */
     public static function get_json($direction, $time) {
-        return (object)[
-			'n' => null,
-            'd' => null,
-		];
+        return (object)array(
+            'type' => 'date',
+            't' => (int)$time
+        );
     }
 
     /**
