@@ -31,7 +31,7 @@ M.availability_relativedate.form.initInner = function(timeFields, isSection) {
 
 M.availability_relativedate.form.getNode = function(json) {
     var html = '<span class="availability-relativedate">';
-	html += '<span class="gone">' + M.util.get_string('gone', 'availability_enroldate') + '</span>'
+	html += '<span class="gone">' + M.util.get_string('gone', 'availability_enroldate') + '</span>';
 
     html += '<label><select name="relativenumber">';
     for (i = 1; i < 60; i++) {
