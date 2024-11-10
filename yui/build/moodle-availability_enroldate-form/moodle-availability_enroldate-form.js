@@ -7,7 +7,10 @@ YUI.add('moodle-availability_enroldate-form', function (Y, NAME) {
  */
 M.availability_relativedate = M.availability_relativedate || {};
 
-// Класс M.availability_relativedate.form расширяет M.core_availability.plugin.
+/**
+ * @class M.availability_relativedate.form
+ * @extends M.core_availability.plugin
+ */
 M.availability_relativedate.form = Y.Object(M.core_availability.plugin);
 
 // Поля времени, доступные для выбора.
@@ -45,7 +48,7 @@ M.availability_relativedate.form.getNode = function(json) {
     }
     html += '</select></label> ';
 
-    html += '<span class="relativestart">' + M.util.get_string('dateenrol', 'availability_enroldate') + '</span></span>';
+    html += '<span class="relativestart">' + M.util.get_string('dateenrol', 'availability_enroldate') + '</span>';
     var node = Y.Node.create('<span>' + html + '</span>');
 
     // Установите начальные значения, если они указаны.
