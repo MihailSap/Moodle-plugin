@@ -1,4 +1,4 @@
-YUI.add('moodle-availability_relativedate-form', function (Y, NAME) {
+YUI.add('moodle-availability_enroldate-form', function (Y, NAME) {
 
 /**
  * JavaScript для редактирования условий relativedate в форме.
