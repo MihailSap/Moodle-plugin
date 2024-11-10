@@ -8,7 +8,7 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace availability_relativedate\privacy;
+namespace availability_enroldate\privacy;
 
 
 class provider implements \core_privacy\local\metadata\null_provider {
