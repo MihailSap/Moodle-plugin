@@ -45,7 +45,7 @@ M.availability_relativedate.form.getNode = function(json) {
     }
     html += '</select></label> ';
 
-    html += '<span class="relativestart">' + M.util.get_string('dateenrol', 'availability_enroldate') + '</span>';
+    html += '<span class="relativestart">' + M.util.get_string('dateenrol', 'availability_enroldate') + '</span></span>';
     var node = Y.Node.create('<span>' + html + '</span>');
 
     // Установите начальные значения, если они указаны.
