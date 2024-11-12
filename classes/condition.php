@@ -407,13 +407,8 @@ class condition extends \core_availability\condition {
      *
      * @param int|stdClass $course Идентификатор курса или объект курса, для которого производится проверка.
      * @param int $cmid Идентификатор модуля курса, для проверки его использования в условии.
-     * @return bool `true`, если модуль используется в условии доступности, основанном на завершении,
-     *              иначе `false`.
-     *
-     * Логика работы:
-     * - Извлекает информацию обо всех модулях в рамках курса.
-     * - Проверяет каждое условие доступности относительно того, связано ли оно с завершением модуля.
-     * - Выполняет SQL-запрос на уровни секций, чтобы удостоверить отсутствие иных ограничений.
+     * @return bool true, если модуль используется в условии доступности, основанном на завершении,
+     *              иначе false.
      */
     public static function completion_value_used($course, $cmid): bool {
         global $DB;
@@ -474,16 +469,10 @@ class condition extends \core_availability\condition {
      * @param \base_logger $logger Объект логгера, используемый для записи предупреждений и других сообщений.
      * @param string $name Имя элемента, используемое в сообщениях предупреждений для идентификации.
      * @return bool `true`, если произошли изменения и информация была успешно обновлена, иначе `false`.
-     *
-     * Логика работает следующим образом:
-     * - Получает записи идентификаторов, чтобы определить новые идентификаторы модулей курса.
-     * - Если модуль не был восстановлен, записывает предупреждение в лог и сбрасывает идентификатор.
-     * - В случае успешного обновления меняет идентификатор модуля на новый.
      */
     public function update_after_restore($restoreid, $courseid, \base_logger $logger, $name): bool {
         $rec = \restore_dbops::get_backup_ids_record($restoreid, 'course_module', $this->relativecoursemodule);
         if (!($rec && $rec->newitemid)) {
-            // If we are on the same course (e.g. duplicate) then we can just use the existing one.
             if (!get_coursemodule_from_id('', $this->relativecoursemodule, $courseid)) {
                 $this->relativecoursemodule = 0;
                 $logger->process(
