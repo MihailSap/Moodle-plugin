@@ -12,96 +12,69 @@ namespace availability_enroldate;
 
 class condition extends \core_availability\condition {
     /**
-     * Определяет условия доступности, начиная с заданной даты.
-     * @var string
+     * @var int $relativenumber Определяет количество относительно:
+     * сколько единиц измерения использовать (например, 3 дня, 2 недели).
      */
-    const AVAILABLE_AFTER_DATE = '>=';
+    private $relativenumber;
 
     /**
-     * Определяет условия доступности до заданной даты.
-     * @var string
+     * @var int $relativedwm Определяет единицу измерения для времени:
+     * 0 => минуты,
+     * 1 => часы,
+     * 2 => дни,
+     * 3 => недели,
+     * 4 => месяцы.
      */
-    const AVAILABLE_BEFORE_DATE = '<';
+    private $relativedwm;
 
     /**
-     * Хранит тип условия доступности (один из двух, представленных выше)
-     * @var string
+     * @var int $relativestart Указывает, относительно какого события или времени определяется условие:
+     * 1 => После даты начала курса,
+     * 2 => До даты окончания курса,
+     * 3 => После даты зачисления пользователя,
+     * 4 => После окончания метода зачисления,
+     * 5 => После даты окончания курса,
+     * 6 => До даты начала курса,
+     * 7 => После завершения активности.
      */
-    private $AVAILABLE_TYPE;
+    private $relativestart;
 
     /**
-     * Определяет общее время
-     * Нужно извлекать из JSON
-     * @var int
+     * @var int $relativecoursemodule ID модуля курса, используется для типа условия 6.
+     * Указывает, какую активность следует принимать во внимание при расчетах.
      */
-    private $time;
+    private $relativecoursemodule;
 
     /**
-     * Определяет время регистрации пользователя на курс
-     * Нужно извлекать из БД
-     * @var int
-     */
-    private $time_user_registration;
-
-    /** @var int Forced current time (for unit tests) or 0 for normal. */
-    private static $forcecurrenttime = 0;
-
-    /**
-     * Конструктор
-     * @param \stdClass $structure Data structure from JSON decode
-     * @throws \coding_exception If invalid data structure.
+     * Конструктор для класса condition, инициализирующий объект условия
+     * доступности на основе относительных временных параметров.
+     * @param stdClass $structure результат декодирования JSON, содержащий конфигурацию условия.
+     *                  'n' => Указывает кол-во единиц
+     *                  'd' => Единица времени, в которой производится рассчёт (см. relativedwm)
+     *                  's' => Тип начального события, по отношению к которому применяется условие (см. relativestart)
+     *                  'm' => ID модуля курса, используемого в расчёте (при необходимости)
      */
     public function __construct($structure) {
-        global $CFG, $USER, $COURSE, $DB;
-
-        // Проверяем наличие и корректность направления условия 'd'
-        if (isset($structure->d) && in_array($structure->d,
-                array(self::AVAILABLE_AFTER_DATE, self::AVAILABLE_BEFORE_DATE))) {
-            // Устанавливаем направление условия
-            $this->AVAILABLE_TYPE = $structure->d;
-        } else {
-            throw new \coding_exception('Missing or invalid ->d for date condition');
-        }
-
-        // Получаем контекст текущего курса
-        $coursecontext = \context_course::instance($COURSE->id);
-
-        // Проверяем, зачислен ли пользователь в курс
-        if (is_enrolled($coursecontext)) {
-            // Формируем SQL-запрос для получения времени зачисления
-            $sql = "SELECT max(ue.timecreated) as enroldate
-                      FROM {user_enrolments} ue
-                      JOIN {enrol} e ON (e.id = ue.enrolid AND e.courseid = :courseid)
-                      JOIN {user} u ON u.id = ue.userid
-                     WHERE ue.userid = :userid AND u.deleted = 0";
-
-            // Параметры для SQL-запроса: ID пользователя и ID курса
-            $params = array('userid' => $USER->id, 'courseid' => $coursecontext->instanceid);
-
-            // Получаем дату зачисления
-            $enroldate = $DB->get_field_sql($sql, $params, IGNORE_MISSING);
-            $this->time_user_registration = $enroldate;
-        }
-
-        // Проверяем наличие и корректность времени условия 't'
-        if (isset($structure->t) && is_int($structure->t)) {
-            $this->time = $structure->t;
-        } else {
-            throw new \coding_exception('Missing or invalid ->t for date condition');
-        }
+        $this->relativenumber = property_exists($structure, 'n') ? intval($structure->n) : 1;
+        $this->relativedwm = property_exists($structure, 'd') ? intval($structure->d) : 2;
+        $this->relativestart = property_exists($structure, 's') ? intval($structure->s) : 1;
+        $this->relativecoursemodule = property_exists($structure, 'm') ? intval($structure->m) : 0;
     }
 
     /**
-     * Сохраняет текущие условия в БД
+     * Сохраняет текущие настройки условия в виде объекта для дальнейшего использования в БД.
      * Готовит к созданию JSON
      *
-     * @return \stdClass Structure object
+     * @return \stdClass объект, содержащий текущую конфигурацию условия для записей состояния
      */
     public function save() {
-        return (object)array(
-            'type' => 'date',
-            't' => $this->time
-        );
+        return (object)[
+            'type' => 'relativedate',
+            'n' => intval($this->relativenumber),
+            'd' => intval($this->relativedwm),
+            's' => intval($this->relativestart),
+            'm' => intval($this->relativecoursemodule),
+        ];
     }
 
     // СДЕЛАНО | НУЖНО ПРОТЕСТИРОВАТЬ
