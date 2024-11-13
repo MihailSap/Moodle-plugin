@@ -34,3 +34,5 @@ $string['minute'] = 'minute(-s)';
 $string['month'] = 'month(-s)';
 $string['week'] = 'week(-s)';
 $string['year'] = 'year(-s)';
+$string['until'] = 'Until {$a->rnumber} {$a->rtime} {$a->rela}';
+$string['from'] = 'From {$a->rnumber} {$a->rtime} {$a->rela}';
