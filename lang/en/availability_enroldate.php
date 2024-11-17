@@ -34,5 +34,5 @@ $string['minute'] = 'minute(-s)';
 $string['month'] = 'month(-s)';
 $string['week'] = 'week(-s)';
 $string['year'] = 'year(-s)';
-$string['until'] = 'Until {$a->rnumber} {$a->rtime} {$a->rela}';
-$string['from'] = 'From {$a->rnumber} {$a->rtime} {$a->rela}';
+$string['until'] = 'There is a limit associated with the date and time of registration for the course. The material will be available until {$a->rnumber} {$a->rtime} {$a->rela}';
+$string['from'] = 'There is a limit associated with the date and time of registration for the course. The material will be available from {$a->rnumber} {$a->rtime} {$a->rela}';
