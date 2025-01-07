@@ -4,7 +4,7 @@
  * Languages configuration for the availability_enroldate plugin.
  *
  * @package   availability_enroldate
- * @copyright 2024 Deloviye ludi
+ * @copyright 2025 Deloviye ludi
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -89,9 +89,8 @@ class condition extends \core_availability\condition {
      * Возвращает строку, описывающую ограничения для указанного элемента,
      * независимо от их текущего применения.
      * Определяет, какие ограничения применяются к элементу на основе курса и прав пользователя.
-     * Если конец курса не установлен, возвращает сообщение об отсутствии даты.
      * В зависимости от флага $not, определяет, использовать ли 'from' или 'until'.
-     * Возвращает отформатированную дату ограничения с дополнительной отладочной информацией, если это разрешено.
+     * Возвращает отформатированную дату ограничения с дополнительной отладочной информацией.
      *
      * @param bool $full Если true, возвращает полную информацию об ограничениях
      * @param bool $not Если true, инвертирует условия описания
@@ -101,16 +100,13 @@ class condition extends \core_availability\condition {
     public function get_description($full, $not, info $info): string {
         global $USER;
         $course = $info->get_course();
-        $capability = has_capability('moodle/course:manageactivities', context_course::instance($course->id));
 		$frut = $not ? 'until' : 'from';
         $calc = $this->calc($course, $USER->id);
         if ($calc === 0) {
-            return '(' . trim($this->get_debug_string()) . ')';
+            $a = get_debug_string();
+            return trim(get_string('admin_' . $frut, 'availability_enroldate', $a));
         }
-        $a = new stdClass();
-        $a->rnumber = userdate($calc, get_string('strftimedatetime', 'langconfig'));
-        $a->rtime = ($capability && $full) ? '(' . trim($this->get_debug_string()) . ')' : '';
-        $a->rela = '';
+        $a = userdate($calc, get_string('strftimedatetime', 'langconfig'));
         return trim(get_string($frut, 'availability_enroldate', $a));
     }
 
@@ -128,9 +124,8 @@ class condition extends \core_availability\condition {
      * @return string Текстовое представление параметров для отладки.
      * @throws \coding_exception
      */
-    protected function get_debug_string() {
-        // TODO: Избавиться от concat.
-        return ' ' . $this->relativenumber . ' ' . self::option_dwm($this->relativenumber)[$this->relativedwm];
+	protected function get_debug_string() {
+        return ' ' . $this->relativenumber . ' ' . get_string(self::option_dwm($this->relativedwm), 'availability_enroldate');
     }
 
     /**
@@ -244,26 +239,5 @@ class condition extends \core_availability\condition {
             return $olddate;
         }
         return 0;
-    }
-
-    /**
-     * Проверяет, использует ли условие доступности значение завершения для заданного курса и модуля.
-     *
-     * Метод служит для определения, является ли конкретный модуль курса частью условия доступности,
-     * зависящего от завершения другого модуля. Он выполняет проверку на наличие условия доступности
-     * с использованием идентификатора модуля курса в дереве доступности всех модулей курса.
-     *
-     * @param int|stdClass $course Идентификатор курса или объект курса, для которого производится проверка.
-     * @param int $cmid Идентификатор модуля курса, для проверки его использования в условии.
-     * @return bool true, если модуль используется в условии доступности, основанном на завершении,
-     *              иначе false.
-     */
-    public static function completion_value_used($course, $cmid): bool {
-        global $DB;
-        $courseobj = (is_object($course)) ? $course : get_course($course);
-        // Availability of sections (get_section_info_all) is always null.
-        $sqllike = $DB->sql_like('availability', ':availability');
-        $params = ['course' => $courseobj->id, 'availability' => '%"s":7,"m":' . $cmid . '%'];
-        return count($DB->get_records_sql("SELECT id FROM {course_sections} WHERE course = :course AND $sqllike", $params)) > 0;
     }
 }
