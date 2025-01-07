@@ -103,7 +103,7 @@ class condition extends \core_availability\condition {
 		$frut = $not ? 'until' : 'from';
         $calc = $this->calc($course, $USER->id);
         if ($calc === 0) {
-            $a = this->get_debug_string();
+            $a = $this->get_debug_string();
             return trim(get_string('admin_' . $frut, 'availability_enroldate', $a));
         }
         $a = userdate($calc, get_string('strftimedatetime', 'langconfig'));
