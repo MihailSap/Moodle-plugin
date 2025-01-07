@@ -4,7 +4,7 @@
  * Privacy provider class.
  *
  * @package   availability_enroldate
- * @copyright 2024 Deloviye ludi
+ * @copyright 2025 Deloviye ludi
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 

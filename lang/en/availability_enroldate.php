@@ -18,21 +18,22 @@
  * Languages configuration for the availability_enroldate plugin.
  *
  * @package   availability_enroldate
- * @copyright 2024 Deloviye ludi
+ * @copyright 2025 Deloviye ludi
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-$string['description'] = 'Open the materials depending on the date of registration of the user for the course.';
-$string['pluginname'] = 'Restriction by Enrolment date';
-$string['title'] = 'Restriction by Enrolment date';
-$string['privacy:metadata'] = 'The Restriction by date plugin does not store any personal data.';
-$string['description_before'] = 'It has been ';
-$string['description_after'] = 'since the date of enrollment for the course.';
-$string['day'] = 'day(-s)';
-$string['hour'] = 'hour(-s)';
-$string['minute'] = 'minute(-s)';
-$string['month'] = 'month(-s)';
-$string['week'] = 'week(-s)';
-$string['year'] = 'year(-s)';
-$string['until'] = 'There is a limit associated with the date and time of registration for the course. The material will be available until {$a->rnumber} {$a->rtime} {$a->rela}';
-$string['from'] = 'There is a limit associated with the date and time of registration for the course. The material will be available from {$a->rnumber} {$a->rtime} {$a->rela}';
+ $string['description'] = 'The opening of materials depends on the date the user was added to the course.';
+ $string['pluginname'] = 'Limitation on the date added to the course';
+ $string['title'] = 'Limitation on the date added to the course';
+ $string['privacy:metadata'] = 'The "Limitation on the date added to the course" plugin does not store any personal data.';
+ $string['description_before'] = 'Passed ';
+ $string['description_after'] = 'after the date added to the course.';
+ $string['day'] = 'day(-s)';
+ $string['hour'] = 'hour(-s)';
+ $string['minute'] = 'minute(-s)';
+ $string['month'] = 'month(-s)';
+ $string['week'] = 'week(-s)';
+ $string['until'] = 'A restriction related to the date of addition to the course. The material was available until {$a}.';
+ $string['from'] = 'A restriction related to the date of addition to the course. The material will be available from {$a}.';
+ $string['admin_until'] = 'No more than {$a} has passed since being added to the course.';
+ $string['admin_from'] = 'More than {$a} has passed since being added to the course.';

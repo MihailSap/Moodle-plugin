@@ -18,21 +18,22 @@
  * Languages configuration for the availability_enroldate plugin.
  *
  * @package   availability_enroldate
- * @copyright 2024 Deloviye ludi
+ * @copyright 2025 Deloviye ludi
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-$string['description'] = 'Открывайте материалы в зависимости от даты регистрации пользователя на курс.';
-$string['pluginname'] = 'Ограничение по дате регистрации';
-$string['title'] = 'Ограничение по дате регистрации';
-$string['privacy:metadata'] = 'Плагин "Ограничение по дате регистрации" не хранит никаких персональных данных.';
+$string['description'] = 'Открытие материалов в зависимости от даты добавления пользователя на курс.';
+$string['pluginname'] = 'Ограничение по дате добавления на курс';
+$string['title'] = 'Ограничение по дате добавления на курс';
+$string['privacy:metadata'] = 'Плагин "Ограничение по дате добавления на курс" не хранит никаких персональных данных.';
 $string['description_before'] = 'Прошло(-ёл, -ла) ';
-$string['description_after'] = ' после даты регистрации на курсе.';
+$string['description_after'] = ' после даты добавления на курс.';
 $string['day'] = 'день(-я,-ей)';
 $string['hour'] = 'час(-а,-ов)';
 $string['minute'] = 'минут(-а,-ы)';
 $string['month'] = 'месяц(-а,-ев)';
 $string['week'] = 'неделя(-ли,-ль)';
-$string['year'] = 'год(-а,лет)';
-$string['until'] = 'Установлено ограничение, связанное с датой и временем регистрации на курсе. Материал будет доступен до {$a->rnumber} {$a->rtime} {$a->rela}';
-$string['from'] = 'Установлено ограничение, связанное с датой и временем регистрации на курсе. Материал станет доступен с {$a->rnumber} {$a->rtime} {$a->rela}';
+$string['until'] = 'Ограничение, связанное с датой добавления на курс. Материал был доступен до {$a}.';
+$string['from'] = 'Ограничение, связанное с датой добавления на курс. Материал станет доступен с {$a}.';
+$string['admin_until'] = 'Прошло не более {$a} с момента добавления на курс.';
+$string['admin_from'] = 'Прошло более {$a} с момента добавления на курс.';
