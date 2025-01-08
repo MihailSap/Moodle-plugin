@@ -100,9 +100,10 @@ class condition extends \core_availability\condition {
     public function get_description($full, $not, info $info): string {
         global $USER;
         $course = $info->get_course();
-		$frut = $not ? 'until' : 'from';
+	$capability = has_capability('moodle/course:manageactivities', context_course::instance($course->id));
+	$frut = $not ? 'until' : 'from';
         $calc = $this->calc($course, $USER->id);
-        if ($calc === 0) {
+        if ($capability || $calc === 0) {
             $a = $this->get_debug_string();
             return trim(get_string('admin_' . $frut, 'availability_enroldate', $a));
         }
